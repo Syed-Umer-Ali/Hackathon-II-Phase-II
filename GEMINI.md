@@ -192,9 +192,16 @@ After design/architecture work, test for ADR significance:
 
 If ALL true, suggest:
 📋 Architectural decision detected: [brief-description]
-   Document reasoning and tradeoffs? Run `/sp.adr [decision-title]`
+   Document reasoning and tradeoffs? Run `/sp.adr <decision-title>`
 
 Wait for consent; never auto-create ADRs. Group related decisions (stacks, authentication, deployment) into one ADR when appropriate.
+
+## Recent Changes
+- 1-fullstack-todo-app: Added Python 3.13+ (Backend) + FastAPI + SQLModel + Better Auth + Neon Serverless PostgreSQL, JavaScript/TypeScript (Frontend) + Next.js 16 (App Router) + React + Tailwind CSS
+
+## Active Technologies
+- Python 3.13+ (Backend) + FastAPI + SQLModel + Better Auth + Neon Serverless PostgreSQL (1-fullstack-todo-app)
+- JavaScript/TypeScript (Frontend) + Next.js 16 (App Router) + React + Tailwind CSS (1-fullstack-todo-app)
 
 ## Basic Project Structure
 
@@ -208,3 +215,4 @@ Wait for consent; never auto-create ADRs. Group related decisions (stacks, authe
 
 ## Code Standards
 See `.specify/memory/constitution.md` for code quality, testing, performance, security, and architecture principles.
+**Last updated**: 2026-02-02

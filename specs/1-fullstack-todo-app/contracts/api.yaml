@@ -1,0 +1,296 @@
+openapi: 3.0.0
+info:
+  title: Todo Application API
+  version: 1.0.0
+  description: API for managing user-specific todo tasks.
+
+servers:
+  - url: http://localhost:8000/api/v1
+    description: Local Development Server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        user_id:
+          type: string
+          description: Unique identifier for the user (from JWT 'sub' claim).
+        email:
+          type: string
+          format: email
+          description: User's email address.
+      required:
+        - user_id
+        - email
+
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+          description: Unique identifier for the task.
+        user_id:
+          type: string
+          description: Unique identifier of the user who owns the task.
+        title:
+          type: string
+          maxLength: 200
+          minLength: 1
+          description: A brief description of the task.
+        description:
+          type: string
+          nullable: true
+          maxLength: 1000
+          description: Detailed description of the task.
+        completed:
+          type: boolean
+          default: false
+          description: Indicates if the task is finished.
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Timestamp of task creation.
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Timestamp of last update.
+      required:
+        - user_id
+        - title
+        - completed
+
+    TaskCreate:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 200
+          minLength: 1
+          description: A brief description of the task.
+        description:
+          type: string
+          nullable: true
+          maxLength: 1000
+          description: Detailed description of the task.
+      required:
+        - title
+
+    TaskUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 200
+          minLength: 1
+          description: A brief description of the task.
+        description:
+          type: string
+          nullable: true
+          maxLength: 1000
+          description: Detailed description of the task.
+        completed:
+          type: boolean
+          description: Indicates if the task is finished.
+      minProperties: 1 # At least one field must be provided for update
+
+paths:
+  /{user_id}/tasks:
+    get:
+      summary: List all tasks for an authenticated user.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: user_id
+          schema:
+            type: string
+          required: true
+          description: The unique identifier of the user.
+      responses:
+        '200':
+          description: A list of tasks.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+        '401':
+          description: Unauthorized - Invalid or missing JWT token.
+        '403':
+          description: Forbidden - User not authorized to access these tasks.
+    post:
+      summary: Create a new task for an authenticated user.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: user_id
+          schema:
+            type: string
+          required: true
+          description: The unique identifier of the user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreate'
+      responses:
+        '201':
+          description: Task created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Bad Request - Invalid task data.
+        '401':
+          description: Unauthorized - Invalid or missing JWT token.
+        '403':
+          description: Forbidden - User not authorized to create tasks for this user_id.
+
+  /{user_id}/tasks/{id}:
+    get:
+      summary: Get details of a specific task.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: user_id
+          schema:
+            type: string
+          required: true
+          description: The unique identifier of the user.
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: The unique identifier of the task.
+      responses:
+        '200':
+          description: Task details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Forbidden - User not authorized to access this task.
+        '404':
+          description: Task not found.
+    put:
+      summary: Update an existing task.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: user_id
+          schema:
+            type: string
+          required: true
+          description: The unique identifier of the user.
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: The unique identifier of the task.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskUpdate'
+      responses:
+        '200':
+          description: Task updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Bad Request - Invalid task data.
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Forbidden - User not authorized to update this task.
+        '404':
+          description: Task not found.
+    patch:
+      summary: Partially update an existing task (e.g., toggle completion).
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: user_id
+          schema:
+            type: string
+          required: true
+          description: The unique identifier of the user.
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: The unique identifier of the task.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskUpdate'
+      responses:
+        '200':
+          description: Task updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Bad Request - Invalid task data.
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Forbidden - User not authorized to update this task.
+        '404':
+          description: Task not found.
+    delete:
+      summary: Delete a specific task.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: user_id
+          schema:
+            type: string
+          required: true
+          description: The unique identifier of the user.
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: The unique identifier of the task.
+      responses:
+        '204':
+          description: Task deleted successfully. (No content)
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Forbidden - User not authorized to delete this task.
+        '404':
+          description: Task not found.
