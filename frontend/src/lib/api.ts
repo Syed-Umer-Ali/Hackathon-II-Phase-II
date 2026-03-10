@@ -2,7 +2,7 @@
 // This file will contain the API client utility for backend communication.
 // It will automatically include the JWT token in requests.
 
-import { getToken } from './auth';
+import { getToken, removeToken } from './auth';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000/api/v1';
 
@@ -24,7 +24,17 @@ async function fetchApi(
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({ message: response.statusText }));
-    throw new Error(errorData.detail || errorData.message || 'Something went wrong');
+    const errorMessage = errorData.detail || errorData.message || 'Something went wrong';
+
+    // Handle unauthorized or expired tokens
+    if (response.status === 401 || errorMessage.includes('Signature has expired')) {
+      if (typeof window !== 'undefined') {
+        removeToken();
+        window.location.href = '/login?error=session_expired';
+      }
+    }
+
+    throw new Error(errorMessage);
   }
 
   return response;

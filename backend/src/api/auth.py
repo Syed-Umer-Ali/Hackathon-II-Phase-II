@@ -6,6 +6,7 @@ from src.models.base import User
 from src.db import get_session
 import src.middleware.auth
 from pydantic import BaseModel
+from datetime import datetime
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 router = APIRouter()
@@ -93,4 +94,28 @@ async def get_me(
     user = result.first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+class UserUpdate(BaseModel):
+    name: Optional[str] = None
+
+@router.patch("/me", response_model=User)
+async def update_me(
+    user_update: UserUpdate,
+    session: AsyncSession = Depends(get_session),
+    current_user: User = Depends(src.middleware.auth.get_current_user)
+):
+    result = await session.exec(select(User).where(User.user_id == current_user.user_id))
+    user = result.first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    if user_update.name is not None:
+        user.name = user_update.name
+    
+    user.updated_at = datetime.utcnow()
+    
+    session.add(user)
+    await session.commit()
+    await session.refresh(user)
     return user
