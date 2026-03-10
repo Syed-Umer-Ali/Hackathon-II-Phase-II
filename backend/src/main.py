@@ -1,21 +1,30 @@
+import sys
+import os
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from contextlib import asynccontextmanager
-from src.db import create_db_and_tables
 from loguru import logger
-import sys
 
 # Configure Loguru
 logger.remove()
 logger.add(sys.stderr, format="{time} {level} {message}", level="INFO")
-logger.add("logs/backend.log", rotation="10 MB", retention="7 days", level="DEBUG")
+
+# Disable file logging on Vercel (read-only filesystem)
+if not os.environ.get("VERCEL"):
+    os.makedirs("logs", exist_ok=True)
+    logger.add("logs/backend.log", rotation="10 MB", retention="7 days", level="DEBUG")
+
+from .db import create_db_and_tables
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("Starting up...")
-    await create_db_and_tables()
-    logger.info("Database tables created.")
+    try:
+        await create_db_and_tables()
+        logger.info("Database tables created.")
+    except Exception as e:
+        logger.error(f"Failed to create database tables: {e}")
     yield
     logger.info("Shutting down...")
 
@@ -52,6 +61,6 @@ async def health_check():
     return {"status": "ok"}
 
 # Placeholder for API routers
-from src.api import auth, tasks
+from .api import auth, tasks
 app.include_router(auth.router, prefix="/api/v1", tags=["auth"])
 app.include_router(tasks.router, prefix="/api/v1", tags=["tasks"])

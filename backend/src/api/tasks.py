@@ -2,9 +2,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from datetime import datetime
 from sqlmodel import select
-from src.models.base import Task, User
-from src.db import get_session
-from src.middleware.auth import get_current_user
+from ..models.base import Task, User
+from ..db import get_session
+from ..middleware.auth import get_current_user
 from pydantic import BaseModel
 from typing import List
 from sqlmodel.ext.asyncio.session import AsyncSession
