@@ -8,7 +8,7 @@ from pydantic import ValidationError
 from dotenv import load_dotenv
 from loguru import logger
 
-from src.models.base import User
+from ..models.base import User
 
 # Ensure env is loaded
 load_dotenv()

@@ -2,9 +2,9 @@
 from __future__ import annotations
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
-from src.models.base import User
-from src.db import get_session
-import src.middleware.auth
+from ..models.base import User
+from ..db import get_session
+from ..middleware import auth
 from pydantic import BaseModel
 from datetime import datetime
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -71,7 +71,7 @@ async def login_for_access_token(form_data: UserLogin, session: AsyncSession = D
     # For now, we are skipping it.
     
     # Create JWT token
-    from src.middleware.auth import SECRET_KEY, ALGORITHM
+    from ..middleware.auth import SECRET_KEY, ALGORITHM
     from jose import jwt
     from datetime import datetime, timedelta
 
@@ -88,7 +88,7 @@ async def login_for_access_token(form_data: UserLogin, session: AsyncSession = D
 @router.get("/me", response_model=User)
 async def get_me(
     session: AsyncSession = Depends(get_session),
-    current_user: User = Depends(src.middleware.auth.get_current_user)
+    current_user: User = Depends(auth.get_current_user)
 ):
     result = await session.exec(select(User).where(User.user_id == current_user.user_id))
     user = result.first()
@@ -103,7 +103,7 @@ class UserUpdate(BaseModel):
 async def update_me(
     user_update: UserUpdate,
     session: AsyncSession = Depends(get_session),
-    current_user: User = Depends(src.middleware.auth.get_current_user)
+    current_user: User = Depends(auth.get_current_user)
 ):
     result = await session.exec(select(User).where(User.user_id == current_user.user_id))
     user = result.first()
