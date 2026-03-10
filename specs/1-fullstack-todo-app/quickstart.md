@@ -8,7 +8,8 @@ This guide provides instructions to quickly set up and run the Full-Stack Todo A
 
 ## Prerequisites
 
--   Python 3.13+
+-   Python 3.12+ (managed via `uv`)
+-   `uv` package manager
 -   Node.js (LTS)
 -   npm or yarn
 -   Docker (for local database setup, optional, or use Neon DB directly)
@@ -26,19 +27,21 @@ This guide provides instructions to quickly set up and run the Full-Stack Todo A
     ```
 
 2.  **Backend Setup (FastAPI):**
-    ```bash
+    ```powershell
     cd backend
-    python -m venv venv
-    ./venv/Scripts/activate # On Windows
-    # source venv/bin/activate # On macOS/Linux
-    pip install -r requirements.txt # (assuming requirements.txt will be generated)
     
-    # Configure environment variables
-    # Create a .env file:
-    # DATABASE_URL="postgresql+psycopg://user:password@host:port/dbname"
-    # BETTER_AUTH_SECRET="your_very_secret_key"
+    # 1. Install Python 3.12 and create virtual environment
+    uv python install 3.12
+    uv venv
+
+    # 2. Install dependencies
+    uv pip install -r requirements.txt
     
-    uvicorn main:app --reload --port 8000
+    # 3. Configure environment variables
+    # Ensure you have a .env file with DATABASE_URL and BETTER_AUTH_SECRET
+    
+    # 4. Start the Server
+    uv run uvicorn src.main:app --reload --port 8000
     ```
     The backend API will be available at `http://localhost:8000/api/v1`.
 

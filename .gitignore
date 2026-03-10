@@ -1,0 +1,31 @@
+# Git Ignore for Full-Stack Todo Application
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+dist/
+*.egg-info/
+.pytest_cache/
+
+# Node.js / TypeScript (Next.js)
+node_modules/
+.next/
+out/
+.env.local
+.env*.local
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+.DS_Store
+*.log
+
+# Universal
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+.vscode/
+.idea/
+.env

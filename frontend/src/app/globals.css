@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+:root {
+  --obsidian: #0A0A0B;
+  --charcoal: #121214;
+  --dark-gray: #1a1a1d;
+  --light-gray: #2d2d30;
+  --accent-purple: #A855F7;
+  --accent-cyan: #06B6D4;
+  --accent-pink: #d946ef;
+  --text-primary: #f0f0f0;
+  --text-secondary: #a0a0a0;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+
+  --background: var(--obsidian);
+  --foreground: var(--text-primary);
+  --card: var(--charcoal);
+  --card-foreground: var(--text-primary);
+  --popover: var(--charcoal);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--accent-purple);
+  --primary-foreground: #ffffff;
+  --secondary: var(--dark-gray);
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--light-gray);
+  --muted-foreground: var(--text-secondary);
+  --accent: var(--dark-gray);
+  --accent-foreground: var(--text-primary);
+  --destructive: var(--danger);
+  --destructive-foreground: #ffffff;
+  --border: var(--glass-border);
+  --input: var(--glass-border);
+  --ring: var(--accent-purple);
+}
+
+@theme {
+  /* Generic semantic tokens */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Custom app color tokens */
+  --color-obsidian: var(--obsidian);
+  --color-charcoal: var(--charcoal);
+  --color-dark-gray: var(--dark-gray);
+  --color-light-gray: var(--light-gray);
+  --color-accent-purple: var(--accent-purple);
+  --color-accent-cyan: var(--accent-cyan);
+  --color-accent-pink: var(--accent-pink);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-glass-bg: var(--glass-bg);
+  --color-glass-border: var(--glass-border);
+
+  /* Fonts */
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(168, 85, 247, 0.05) 0%, transparent 20%),
+    radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.05) 0%, transparent 20%);
+}
