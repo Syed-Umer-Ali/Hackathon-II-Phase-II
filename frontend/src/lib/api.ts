@@ -8,6 +8,12 @@ let baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000/api/
 if (baseUrl && !baseUrl.startsWith('http://') && !baseUrl.startsWith('https://')) {
   baseUrl = `https://${baseUrl}`;
 }
+
+// Ensure the baseUrl ends with /api/v1 since all backend routes use this prefix
+if (baseUrl && !baseUrl.endsWith('/api/v1')) {
+  baseUrl = baseUrl.replace(/\/$/, '') + '/api/v1';
+}
+
 const API_BASE_URL = baseUrl;
 
 async function fetchApi(
