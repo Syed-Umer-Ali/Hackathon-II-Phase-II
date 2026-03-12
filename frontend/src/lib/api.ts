@@ -4,7 +4,11 @@
 
 import { getToken, removeToken } from './auth';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000/api/v1';
+let baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000/api/v1';
+if (baseUrl && !baseUrl.startsWith('http://') && !baseUrl.startsWith('https://')) {
+  baseUrl = `https://${baseUrl}`;
+}
+const API_BASE_URL = baseUrl;
 
 async function fetchApi(
   endpoint: string,
